@@ -1,28 +1,30 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <TransitionPage>
+      <component :is="layout">
+        <TransitionPage>
+          <router-view />
+        </TransitionPage>
+      </component>
+    </TransitionPage>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import TransitionPage from '@/components/shared/TransitionPage.vue'
+import stringMixin from '@/mixins/string'
 
 export default {
   name: 'App',
+  mixins: [stringMixin],
   components: {
-    HelloWorld
+    TransitionPage
+  },
+  computed: {
+    layout() {
+      const lyt = this.slug2pascal(this.$route.meta.layout || 'default')
+      return () => import(`@/layouts/${lyt}`)
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
